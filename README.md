@@ -1,6 +1,6 @@
 # Learning assembly language
 
-This project is for educational purposes. It will help me better understand how computer **actually** works.
+This project is for educational purposes. Implementing different procedures using assembly language (nasm).
 
 ## File structure
 
@@ -18,7 +18,7 @@ This project is for educational purposes. It will help me better understand how 
 ./build.sh
 ```
 
-It compiles all the sources from `src/modules` to the `obj` and `bin` directories.
+It compiles **ALL** the sources from `src/modules` to the `obj` and `bin` directories.
 
 ## Debug
 
