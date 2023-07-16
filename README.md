@@ -3,6 +3,7 @@
 This project is for educational purposes. It will help me better understand how computer **actually** works.
 
 ## File structure
+
 ```
 .
 ├── macros
@@ -13,13 +14,18 @@ This project is for educational purposes. It will help me better understand how 
 
 ## Build
 
-Run ```build.sh``` from the project directory.
-It compiles all the sources from ```src/modules```, creates ```obj``` and ```bin``` directories.
+```
+./build.sh
+```
+
+It compiles all the sources from `src/modules` to the `obj` and `bin` directories.
 
 ## Debug
 
-Run ```build.sh -g```. Use [gdb](https://sourceware.org/gdb/onlinedocs/gdb/).
+Pass -g to the build script.
+Use [gdb](https://sourceware.org/gdb/onlinedocs/gdb/).
 
-## Features
+## What's implemented
 
-TODO: add what's implemented
+- number.to_string - converts 4 bytes number to it's string representation
+- string.to_number - does the opposite
