@@ -1,2 +1,2 @@
 FROM alpine:3.14
-CMD ["echo", "works!!"]
+CMD ["echo", "hello nasm"]
