@@ -29,5 +29,3 @@ Use [gdb](https://sourceware.org/gdb/onlinedocs/gdb/).
 
 - number.to_string - converts 4 bytes number to it's string representation
 - string.to_number - does the opposite
-
-## Sample changes in repo
