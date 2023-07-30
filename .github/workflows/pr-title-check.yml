@@ -13,12 +13,11 @@ jobs:
           script: |
             const payload = context.payload
             const prTitle = payload.pull_request.title
-            // The pattern for JIRA ticket format
-            const jiraPattern = /^\d+:\s\w.+/g
-            if (!jiraPattern.test(prTitle)) {
-              console.log('The PR title does not match JIRA ticket format!')
-              // Fails the workflow
-              core.setFailed('PR title does not match JIRA ticket format!')
+            const casePattern = /^\d+:\s\w.+/g
+            if (!casePattern.test(prTitle)) {
+              console.log('PR title should start with case number!')
+              console.log('Example: "1234: implemented new feature"')
+              core.setFailed('PR title has incorrect format')
             } else {
               console.log('PR title format is correct.')
             }
