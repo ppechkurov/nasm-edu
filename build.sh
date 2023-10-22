@@ -37,4 +37,4 @@ done
 
 # compile exec
 nasm -f elf src/$entry_point.asm -o $obj_path/$entry_point.o $debug
-ld -m elf_i386 $(ls -d -- $obj_path/*) -o $bin_path/main
+ld -m elf_i386 $(ls -d -- $obj_path/*) -o $bin_path/$entry_point
