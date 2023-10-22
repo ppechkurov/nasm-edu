@@ -1,5 +1,7 @@
 ;; number/to_string.asm ;;
-; converts 4 byte number to string
+; converts 4-digit number to string, max = 2559
+; only this max because of I'm lazy to work with two registers to divide
+; the number
 ; returns address of the converted string
 
 global to_string
