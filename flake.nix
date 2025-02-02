@@ -11,7 +11,8 @@
       in with pkgs; {
         # Development environment output
         devShells = {
-          default = mkShell { packages = [ nasm nasmfmt watchexec gnumake ]; };
+          default =
+            mkShell { packages = [ asm-lsp nasm nasmfmt watchexec gnumake ]; };
         };
 
         # Binary
