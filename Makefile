@@ -6,13 +6,12 @@ obj/%.o: src/**/%.asm
 bin/%: obj/%.o
 	ld -m elf_i386 $< -o $@
 
-bin ?= hello
-
 asm: bin/$(bin)
 
 .PHONY: watch
 watch:
-	@watchexec --watch src "make asm bin=$(bin) && echo && $(bin)"
+	@$(MAKE) clean
+	@watchexec --watch src/$(bin) "make asm bin=$(bin) && echo && $(bin)"
 
 .PHONY: clean
 clean:
