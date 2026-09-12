@@ -23,10 +23,11 @@
           default = mkShell {
             packages = [
               asm-lsp
+              gdb
+              gnumake
               nasm
               nasmfmt
               watchexec
-              gnumake
             ];
           };
         };

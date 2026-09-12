@@ -9,17 +9,6 @@ diagnostics = true
 default_diagnostics = false
 
 [[project]]
-path = "0xAX"
-assembler = "nasm"
-instruction_set = "x86-64"
-
-[project.opts]
-compiler = "nasm"
-compile_flags_txt = ["-f", "elf64"]
-diagnostics = true
-default_diagnostics = false
-
-[[project]]
 path = "src"
 assembler = "nasm"
 instruction_set = "x86"

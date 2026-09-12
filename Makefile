@@ -1,7 +1,7 @@
 MAKEFLAGS += --no-print-directory
 
 obj/%.o: src/**/%.asm
-	nasm -f elf32 $< -o $@
+	nasm -f elf32 $< -o $@ -g
 
 bin/%: obj/%.o
 	ld -m elf_i386 $< -o $@
