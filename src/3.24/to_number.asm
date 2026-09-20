@@ -13,6 +13,7 @@ to_number:
         mov esi, eax                   ; prepare read
         xor eax, eax                   ; prepare acc
         xor ecx, ecx                   ; reset counter
+        cld
 
 .lp:
         cmp [esp], ecx                 ; len == counter?
@@ -20,21 +21,20 @@ to_number:
 
         lodsb                          ; byte -> eax
 
-        cmp eax, 0                     ; NULL?
+        cmp al, 0                      ; NULL?
         je .err                        ; just in case
 
 .convert:
         inc ecx
         sub al, "0"                    ; char to digit
 
-        div edi                        ; remainder -> edx
-
-        mov ebx, edx                   ; persist remainder
+        movzx ebx, al                  ; persist current digit
         mov eax, [esp+8]               ; load current result
         mul edi
 
         add eax, ebx                   ; add a remainder
         mov [esp+8], eax
+
         jmp .lp
 
 .done:
@@ -44,6 +44,7 @@ to_number:
 
 .err:
         mov ecx, 1                     ; error
+        xor eax, eax
 .ret:
         add esp, 12                    ; clean stack
         ret

@@ -5,6 +5,8 @@
 
         %include "macros/stud_io.inc"
         %include "src/3.24/to_number.asm"
+        %include "src/3.24/to_string.asm"
+
         global _start
 
         section .bss
@@ -93,7 +95,7 @@ read_all:
         cld
         mov ebp, 10                    ; ten
 
-convert:
+.to_number:
         mov eax, str1
         mov ecx, [len1]
         call to_number                 ; number -> eax, err -> ecx
@@ -123,7 +125,7 @@ calc:
         add eax, [num2]
 
         mov ebx, .sub                  ; return address
-        jmp to_str
+        jmp .to_string
 
 .sub:
         PUTCHAR 10
@@ -146,7 +148,7 @@ calc:
 
 .positive:
         mov ebx, .mul                  ; return address
-        jmp to_str
+        jmp .to_string
 
 .mul:
         PUTCHAR 10
@@ -158,7 +160,7 @@ calc:
         rep stosb                      ; fill with 0
 
         mov eax, [num1]
-        mul [num2]
+        mul dword [num2]               ; watch for correct size!
 
         mov edi, buf+10-1
         mov esi, edi
@@ -166,44 +168,21 @@ calc:
 
         mov ebx, quit                  ; return address
 
-to_str:                                ; assuming eax contains the number
-        div ebp                        ; ebp = 10; modulo -> edx
-        mov ecx, eax                   ; save result
-        add edx, "0"                   ; to char
-        mov eax, edx
-
-        stosb
-        jecxz .done
-
-        mov eax, ecx
-        xor edx, edx
-
-        jmp to_str
-.done:
-        mov eax, ecx
-        xor edx, edx
+.to_string:                            ; assuming eax contains the number
+        mov ecx, buf                   ; buf -> ecx
+        push ebx                       ; save return addr
+        call to_string                 ; str -> buf
+        pop ebx                        ; restore return addr
 
         mov edi, buf
         mov esi, edi
-
         cld
 .lp:
         lodsb
-
-        cmp esi, buf+10+1              ; boundary check
-        jl .skip
-
-        mov eax, ebx                   ; capture return address
-        cmp eax, quit
-        je .clean
-        jmp ebx
-.clean:
-        xor ebx, ebx
-        jmp quit
-
-.skip:
         cmp al, 0
-        je .lp
+        jne .print
+
+        jmp ebx
 
 .print:
         PUTCHAR al
@@ -211,5 +190,6 @@ to_str:                                ; assuming eax contains the number
 
 quit:
         PUTCHAR 10
+        xor ebx, ebx
         mov eax, 1                     ; exit syscall
         int 80h
