@@ -4,24 +4,25 @@
 ; output: 6
 
         %include "macros/stud_io.inc"
+        %include "src/3.24/to_number.asm"
         global _start
 
         section .bss
         str1 resb 10                   ; first input str
-        str2 resb 10                   ; second input str
+        len1 resd 1                    ; first input len
         num1 resd 1                    ; first converted num
+
+        str2 resb 10                   ; second input str
+        len2 resd 1                    ; second input len
         num2 resd 1                    ; second converted num
+
         buf resb 10                    ; print buffer
 
         section .text
 _start:
         xor eax, eax
-        mov edi, str1
-        cld
-        jmp read
-
-to_num2:
-        mov edi, str2
+        xor ecx, ecx                   ; current str len
+        mov edi, str1                  ; str1 -> destination
 
 read:
         GETCHAR
@@ -32,7 +33,7 @@ read:
         cmp eax, 10                    ; \n?
         je done
 
-        cmp eax, " "
+        cmp eax, " "                   ; got space?
         je to_num2                     ; read second number
 
         cmp eax, "0"                   ; not a digit?
@@ -42,11 +43,19 @@ read:
         jg err
 
         stosb
+        inc ecx
 
         jmp read
 
+to_num2:
+        mov edi, str2                  ; str2 -> destination
+        mov [len1], ecx                ; save str1 len
+        xor ecx, ecx
+        jmp read
+
 done:
-        cmp [str2], 0                  ; str2 is missing
+        mov [len2], ecx                ; save str2 len
+        cmp ecx, 0                     ; str2 is missing
         jne read_all
 
         PRINT "error: number two was not provided"
@@ -85,38 +94,19 @@ read_all:
         mov ebp, 10                    ; ten
 
 convert:
-        lodsb
+        mov eax, str1
+        mov ecx, [len1]
+        call to_number                 ; number -> eax, err -> ecx
+        cmp ecx, 1                     ; err?
+        je err
+        mov [num1], eax                ; save converted number
 
-        cmp al, 0                      ; we wrote from end to start - skip zero's until something meaningful
-        je .next
-
-        sub al, "0"                    ; char to digit
-
-.to_num:
-        div ebp                        ; remainder -> edx
-
-        mov ecx, edx                   ; persist the remainder
-        mov eax, [edi]                 ; load current result
-        mul ebp                        ; x10
-
-        add eax, ecx                   ; add a remainer to the result
-        mov [edi], eax                 ; update the result
-        jmp convert                    ; next
-
-.next:
-        cmp edi, num1                  ; check which number is processing
-        jne .done                      ; both number are parsed here
-
-; reinit the thing
-        xor eax, eax
-        xor ecx, ecx
-        mov esi, str2
-        mov edi, num2
-        mov ebx, str2 + 10             ; end of the str2
-
-        jmp convert                    ; go parse num2
-
-.done:
+        mov eax, str2
+        mov ecx, [len2]
+        call to_number                 ; number -> eax, err -> ecx
+        cmp ecx, 1                     ; err?
+        je err
+        mov [num2], eax                ; save converted number
 
 calc:
         xor eax, eax
