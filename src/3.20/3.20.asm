@@ -25,10 +25,12 @@
 
         section .text
 _start:
-        mov eax, str1
-        mov ecx, str1_len
+        push str1_len
+        push str1
         call read                      ; read count -> ecx
-        mov [len1], ebx
+        add esp, 8
+
+        mov [len1], eax
 
         cmp ecx, " "                   ; got space?
         je read_2                      ; read the second number
@@ -36,18 +38,16 @@ _start:
         jmp err
 
 read_2:
-        mov eax, str2
-        mov ecx, str2_len
+        push str2_len
+        push str2
         call read
-        mov [len2], ebx
+        add esp, 8
 
-        jmp read_all
-
-done:
-        mov [len2], ecx                ; save str2 len
-        cmp ecx, 0                     ; str2 is missing
+        mov [len2], eax                ; save str2 len
+        cmp eax, 0                     ; str2 is missing
         jne read_all
 
+done:
         PRINT "error: number two was not provided"
         PUTCHAR 10
 
@@ -163,7 +163,7 @@ calc:
         push buf
         push eax                       ; num to convert should be here
         call to_string                 ; str -> buf
-        sub esp, 8
+        add esp, 8
 
         mov edi, buf
         mov esi, edi

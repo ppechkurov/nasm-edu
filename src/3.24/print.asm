@@ -1,19 +1,26 @@
-; print a string starting at address (eax=address of a string to print)
+; print a string starting at address ([ebp+8]=address of a string to print)
 
         %include "macros/stud_io.inc"
 
 print_str:
-        push eax                       ; [esp] str addr
+        push ebp                       ; CDECL
+        mov ebp, esp
+
+        push esi
+
         mov esi, eax                   ; prepare read
         xor eax, eax
 
 .lp:
         lodsb
         cmp al, 0                      ; end of the str?
-        je .return
+        je .quit
 
         PUTCHAR al
         jmp .lp
 
-.return:
-        pop eax                        ; recover eax
+.quit:
+        pop esi
+        mov esp, ebp                   ; CDECL
+        pop ebp
+        ret

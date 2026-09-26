@@ -1,15 +1,18 @@
-; read a string at addr up to len (eax=address of a string, ecx=len)
-; returns (ebx=read len, ecx=error code)
+; read a string at addr up to len ([ebp+8]=address of a string, [ebp+12]=len)
+; returns (eax=read len, ecx=error code)
 
         %include "macros/stud_io.inc"
 
 read:
-        push eax                       ; [esp] initial str addr
-        cmp ecx, 0
-        je .return                     ; len=0
+        push ebp                       ; CDECL
+        mov ebp, esp
 
-        mov edi, eax                   ; prepare write
-        mov ebx, ecx                   ; keep scan len in ebx
+        push edi
+
+        cmp [ebp+12], 0
+        je .quit                       ; len=0
+
+        mov edi, [ebp+8]               ; prepare write
 
         xor eax, eax                   ; char
         xor ecx, ecx                   ; scanned
@@ -28,15 +31,19 @@ read:
         inc ecx
 
 .check:
-        cmp ebx, ecx
-        jle .return
+        cmp [ebp+12], ecx
+        jle .quit
         jmp .read_lp
 
 .not_digit:
-        mov ebx, ecx                   ; read len -> ebx
+        mov edx, ecx                   ; save read len
         mov ecx, eax                   ; char as error code
+        mov eax, edx                   ; return len
 
-.return:
-        mov [edi+1], 0                 ; finish str
-        pop eax                        ; restore eax
+.quit:
+        mov [edi], 0                   ; finish str
+
+        pop edi
+        mov esp, ebp
+        pop ebp
         ret
