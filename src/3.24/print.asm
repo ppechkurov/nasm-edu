@@ -2,7 +2,7 @@
 
         %include "macros/stud_io.inc"
 
-print:
+print_str:
         push eax                       ; [esp] str addr
         mov esi, eax                   ; prepare read
         xor eax, eax

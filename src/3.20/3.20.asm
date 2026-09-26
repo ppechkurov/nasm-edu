@@ -3,18 +3,21 @@
 ; output: -1
 ; output: 6
 
-        %include "macros/stud_io.inc"
+; %include "macros/stud_io.inc"
         %include "src/3.24/to_number.asm"
         %include "src/3.24/to_string.asm"
+        %include "src/3.24/read.asm"
 
         global _start
 
         section .bss
         str1 resb 10                   ; first input str
+        str1_len equ $-str1            ; first input len
         len1 resd 1                    ; first input len
         num1 resd 1                    ; first converted num
 
         str2 resb 10                   ; second input str
+        str2_len equ $-str2            ; second input len
         len2 resd 1                    ; second input len
         num2 resd 1                    ; second converted num
 
@@ -22,38 +25,23 @@
 
         section .text
 _start:
-        xor eax, eax
-        xor ecx, ecx                   ; current str len
-        mov edi, str1                  ; str1 -> destination
+        mov eax, str1
+        mov ecx, str1_len
+        call read                      ; read count -> ecx
+        mov [len1], ebx
 
-read:
-        GETCHAR
+        cmp ecx, " "                   ; got space?
+        je read_2                      ; read the second number
+        mov eax, ebx                   ; result to eax
+        jmp err
 
-        cmp eax, -1                    ; eof?
-        je done
+read_2:
+        mov eax, str2
+        mov ecx, str2_len
+        call read
+        mov [len2], ebx
 
-        cmp eax, 10                    ; \n?
-        je done
-
-        cmp eax, " "                   ; got space?
-        je to_num2                     ; read second number
-
-        cmp eax, "0"                   ; not a digit?
-        jl err
-
-        cmp eax, "9"                   ; not a digit?
-        jg err
-
-        stosb
-        inc ecx
-
-        jmp read
-
-to_num2:
-        mov edi, str2                  ; str2 -> destination
-        mov [len1], ecx                ; save str1 len
-        xor ecx, ecx
-        jmp read
+        jmp read_all
 
 done:
         mov [len2], ecx                ; save str2 len
@@ -78,6 +66,7 @@ err:
         PUTCHAR "'"
 
 read_all:
+        jmp .done
         cmp eax, -1
         je .done
 
