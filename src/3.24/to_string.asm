@@ -1,20 +1,23 @@
-; to_string (eax=number to convert, ecx=addr of the result str)
-; returns nothing, result str is 0-terminated
+; to_string ([ebp+8]=number to convert, [ebp+12]=addr of the result str)
 
-; %include "macros/stud_io.inc"
+        section .text
+divider:
+        dd 10
 
 to_string:
-        push ecx                       ; [esp] save addr of str
+        push ebp                       ; CDECL
+        mov ebp, esp                   ; save esp
 
-        mov edi, ecx                   ; prepare write
+        push edi
+        push esi
 
+        mov edi, [ebp+12]              ; prepare write
         xor edx, edx                   ; prepare div
-        mov ebx, 10
 
         cld
 
 .convert:
-        div ebx                        ; modulo -> edx
+        div dword [divider]            ; modulo -> edx
         mov ecx, eax                   ; save result
         add edx, "0"                   ; to char
         mov eax, edx
@@ -32,9 +35,8 @@ to_string:
         stosb                          ; terminate with 0
 
 .reverse:
-        pop ebx                        ; restore str addr
-        mov esi, ebx                   ; prepare read
-        mov edi, ebx                   ; prepare write
+        mov esi, [ebp+12]              ; prepare read
+        mov edi, [ebp+12]              ; prepare write
         cld
 
         xor ecx, ecx
@@ -53,4 +55,8 @@ to_string:
         loop .pop
 
 .ret:
+        pop esi
+        pop edi
+        mov esp, ebp                   ; CDECL
+        pop ebp                        ; caller's frame back
         ret

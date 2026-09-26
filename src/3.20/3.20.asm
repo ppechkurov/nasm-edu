@@ -160,10 +160,10 @@ calc:
         mov ebx, quit                  ; return address
 
 .to_string:                            ; assuming eax contains the number
-        mov ecx, buf                   ; buf -> ecx
-        push ebx                       ; save return addr
+        push buf
+        push eax                       ; num to convert should be here
         call to_string                 ; str -> buf
-        pop ebx                        ; restore return addr
+        sub esp, 8
 
         mov edi, buf
         mov esi, edi
