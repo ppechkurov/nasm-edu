@@ -85,16 +85,18 @@ read_all:
         mov ebp, 10                    ; ten
 
 .to_number:
-        mov eax, str1
-        mov ecx, [len1]
+        push str1
         call to_number                 ; number -> eax, err -> ecx
+        add esp, 4                     ; CDECL -> restore the stack
+
         cmp ecx, 1                     ; err?
         je err
         mov [num1], eax                ; save converted number
 
-        mov eax, str2
-        mov ecx, [len2]
+        push str2
         call to_number                 ; number -> eax, err -> ecx
+        add esp, 4                     ; CDECL -> restore the stack
+
         cmp ecx, 1                     ; err?
         je err
         mov [num2], eax                ; save converted number

@@ -1,50 +1,46 @@
-; to_number (eax=address of a string to convert, ecx=length)
+; to_number ([ebp+8]=address of a string to convert)
 ; returns (eax=result, ecx=error)
-
-; %include "macros/stud_io.inc"
+        section .text
+ten:
+        dd 10
 
 to_number:
-        push dword 0                   ; [esp+8] result
-        push eax                       ; [esp+4] str addr
-        push ecx                       ; [esp] str len
+        push ebp                       ; CDECL
+        mov ebp, esp                   ; save esp
 
-        mov edi, 10
+        push dword 0                   ; [ebp-4] result
+        push esi                       ; [ebp-8] save registers
+        push ebx                       ; [ebp-12] for a caller
 
-        mov esi, eax                   ; prepare read
+        mov esi, [ebp+8]               ; prepare read
         xor eax, eax                   ; prepare acc
         xor ecx, ecx                   ; reset counter
         cld
 
 .lp:
-        cmp [esp], ecx                 ; len == counter?
-        je .done
-
         lodsb                          ; byte -> eax
 
         cmp al, 0                      ; NULL?
-        je .err                        ; just in case
+        je .done                       ; just in case
 
-.convert:
-        inc ecx
         sub al, "0"                    ; char to digit
 
         movzx ebx, al                  ; persist current digit
-        mov eax, [esp+8]               ; load current result
-        mul edi
+        mov eax, [ebp-4]               ; load current result
+        mul dword [ten]
 
         add eax, ebx                   ; add a remainder
-        mov [esp+8], eax
+        mov [ebp-4], eax
 
         jmp .lp
 
 .done:
-        mov eax, [esp+8]               ; result to eax
-        mov ecx, 0
-        jmp .ret
+        mov eax, [ebp-4]               ; result to eax
+        xor ecx, ecx
 
-.err:
-        mov ecx, 1                     ; error
-        xor eax, eax
-.ret:
-        add esp, 12                    ; clean stack
+.quit:
+        pop ebx                        ; <- [ebp-12] restore ebx
+        pop esi                        ; <- [ebp-8]  restore esi
+        mov esp, ebp                   ; CDECL
+        pop ebp                        ; caller's frame back
         ret
