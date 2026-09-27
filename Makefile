@@ -1,10 +1,18 @@
 MAKEFLAGS += --no-print-directory
 
-obj/%.o: src/**/%.asm
+src/modules/strings/%.o: src/modules/strings/%.asm
+	nasm -f elf32 $< -o $@ -g
+strings: src/modules/strings/strlen.o
+
+modules: strings
+
+obj/%.o: src/**/%.asm modules
 	nasm -f elf32 $< -o $@ -g
 
 bin/%: obj/%.o
-	ld -m elf_i386 $< -o $@
+	ld -m elf_i386 $< \
+		src/modules/strings/strlen.o \
+		-o $@
 
 asm: bin/$(bin)
 
@@ -16,6 +24,7 @@ watch:
 .PHONY: clean
 clean:
 	rm bin/* obj/* -rf
+	find . -name '*.o' -delete
 
 .PHONY: init
 init:

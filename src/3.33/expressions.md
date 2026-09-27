@@ -1,0 +1,11 @@
+```gdb
+*(int*)$esp
+*(int*)&argc
+(char*)*(void**)($esp+8)
+(char*)*(void**)($esp+12)
+$esi
+$edi
+(char)$al
+(char)$cl
+$ebx
+```

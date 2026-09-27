@@ -1,6 +1,8 @@
 ; print a string starting at address ([ebp+8]=address of a string to print)
+        global print_str
 
         %include "macros/stud_io.inc"
+        %define loc_arg1 ebp+8
 
 print_str:
         push ebp                       ; CDECL
@@ -8,7 +10,7 @@ print_str:
 
         push esi
 
-        mov esi, eax                   ; prepare read
+        mov esi, [loc_arg1]            ; prepare read
         xor eax, eax
 
 .lp:
