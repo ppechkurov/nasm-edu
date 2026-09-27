@@ -28,3 +28,18 @@
 
         %endmacro
 
+; switch macro
+        %macro switch 1-*
+
+        %assign n 1
+
+        %rep %0
+        cmp eax, n
+        je %1
+        %assign n n + 1
+        %rotate 1
+        %endrep
+
+        jmp no_label
+
+        %endmacro
