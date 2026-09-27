@@ -68,8 +68,24 @@
 
 .lp:
         lodsb
-        stosd
 
+        %ifndef SIZE
+        %define SIZE 2
+        %endif
+
+        %if SIZE==2
+        stosb
+        %endif
+
+        %if SIZE==4
+        stosd
+        %endif
+
+        %if SIZE==8
+        stosq
+        %endif
+
+.cmp:
         cmp al, 0
         jne .lp
 
