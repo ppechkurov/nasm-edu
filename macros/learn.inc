@@ -43,3 +43,37 @@
         jmp no_label
 
         %endmacro
+
+; convert macro
+        %macro convert 1
+
+        section .text
+        jmp %%start                    ; need to jump over definitions
+%%lit:
+        db %1, 0
+        lit_len equ $-%%lit
+
+        section .bss
+        %%buf resd lit_len
+
+        section .text
+%%start:
+        push esi
+        push edi
+
+        mov esi, %%lit
+        mov edi, %%buf
+        xor eax, eax
+        cld
+
+.lp:
+        lodsb
+        stosd
+
+        cmp al, 0
+        jne .lp
+
+.quit:
+        pop edi
+        pop esi
+        %endmacro
