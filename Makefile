@@ -1,8 +1,8 @@
 MAKEFLAGS += --no-print-directory
 
 src/modules/strings/%.o: src/modules/strings/%.asm
-	nasm -f elf32 $< -o $@ -g
-strings: src/modules/strings/strlen.o
+	nasm -f elf32 $< -g
+strings: src/modules/strings/strlen.o src/modules/strings/print.o
 
 modules: strings
 
@@ -12,6 +12,7 @@ obj/%.o: src/**/%.asm modules
 bin/%: obj/%.o
 	ld -m elf_i386 $< \
 		src/modules/strings/strlen.o \
+		src/modules/strings/print.o \
 		-o $@
 
 asm: bin/$(bin)

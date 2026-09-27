@@ -29,7 +29,7 @@ _start:
         add esp, 4
         mov edi, eax                   ; keep len2
 
-        cmp esi, edi                   ; len1 vs len2
+        cmp esi, edi                   ; len1==len2?
         je .quit                       ; ok
 
         mov eax, [argv1]               ; string base
