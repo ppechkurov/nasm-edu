@@ -3,12 +3,12 @@
 ; output: -1
 ; output: 6
 
-; %include "macros/stud_io.inc"
-        %include "src/3.24/to_number.asm"
-        %include "src/3.24/to_string.asm"
-        %include "src/3.24/read.asm"
-
+        %include "macros/stud_io.inc"
         global _start
+
+        extern to_string
+        extern to_number
+        extern read
 
         section .bss
         str1 resb 10                   ; first input str

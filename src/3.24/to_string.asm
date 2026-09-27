@@ -1,7 +1,11 @@
-; to_string ([ebp+8]=number to convert, [ebp+12]=addr of the result str)
+        global to_string
 
         section .text
-divider:
+; proc to_string
+; [ebp+8]=number to convert
+; [ebp+12]=addr of the result str
+
+ten:
         dd 10
 
 to_string:
@@ -17,7 +21,7 @@ to_string:
         cld
 
 .convert:
-        div dword [divider]            ; modulo -> edx
+        div dword [ten]                ; modulo -> edx
         mov ecx, eax                   ; save result
         add edx, "0"                   ; to char
         mov eax, edx

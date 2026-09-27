@@ -1,6 +1,10 @@
-; to_number ([ebp+8]=address of a string to convert)
-; returns (eax=result, ecx=error)
+        global to_number
+
         section .text
+; proc to_number
+; [ebp+8]=address of a string to convert
+; returns (eax=result, ecx=error)
+
 ten:
         dd 10
 

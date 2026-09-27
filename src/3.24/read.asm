@@ -1,3 +1,5 @@
+        global read
+
 ; read a string at addr up to len ([ebp+8]=address of a string, [ebp+12]=len)
 ; returns (eax=read len, ecx=error code)
 
