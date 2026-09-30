@@ -1,0 +1,4 @@
+```gdb
+*(int*)&count
+$ebx
+```
